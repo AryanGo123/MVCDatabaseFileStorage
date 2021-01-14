@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DataLibrary.Models
 {
-    class UploadModel
+    public class UploadModel
     {
         public int Id { get; set; }
         public string CreatorName { get; set; }
@@ -12,6 +12,6 @@ namespace DataLibrary.Models
         public DateTime DateCreated { get; set; }
         public string FileName { get; set; }
         public string MimeType { get; set; }
-        public string Base64String { get; }
+        public string Base64String { get; set; }
     }
 }
