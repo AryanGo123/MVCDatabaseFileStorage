@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using MVCApp.Models;
+using DataLibrary;
+using static DataLibrary.BusinessLogic.UploadProcessor;
 
 namespace MVCApp.Controllers
 {
@@ -40,10 +42,25 @@ namespace MVCApp.Controllers
         [HttpPost]
         public ActionResult SubmitForm(UploadModel model)
         {
-            MemoryStream target = new MemoryStream();
-            model.File.InputStream.CopyTo(target);
-            byte[] data = target.ToArray();
-            string base64String = Convert.ToBase64String(data);
+            if (ModelState.IsValid) {
+                MemoryStream target = new MemoryStream();
+                model.File.InputStream.CopyTo(target);
+                byte[] data = target.ToArray();
+                string base64String = Convert.ToBase64String(data);
+
+                DateTime date = DateTime.Now;
+
+                int recordsCreated = CreateUpload(
+                        model.CreatorName, 
+                        model.TaskName, 
+                        model.File.FileName, 
+                        model.File.ContentType,
+                        base64String, 
+                        date
+                    );
+
+                return RedirectToAction("Index");
+            }
 
             //model.File.FileName
             //model.File.ContentType
