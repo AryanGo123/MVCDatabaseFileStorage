@@ -10,7 +10,6 @@ namespace MVCApp.Models
         public string CreatorName { get; set; }
         public string TaskName { get; set; }
         public DateTime DateCreated { get; set; }
-        //public DateTime LastModified { get; set; }
         public HttpPostedFileBase File { get; set; }
         public string FileName { get; set; }
         public string MimeType { get; set; }
