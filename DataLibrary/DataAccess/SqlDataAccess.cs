@@ -10,6 +10,8 @@ namespace DataLibrary.DataAccess
 {
     class SqlDataAccess
     {
-
+        public static string GetConnectionString(string connectionName = "DemoDb") {
+            return ConfigurationManager.ConnectionStrings[connectionName].ConnectionString;
+        }
     }
 }
