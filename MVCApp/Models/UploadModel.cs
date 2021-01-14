@@ -13,6 +13,6 @@ namespace MVCApp.Models
         public HttpPostedFileBase File { get; set; }
         public string FileName { get; set; }
         public string MimeType { get; set; }
-        public string Base64String { get; }
+        public string Base64String { get; set; }
     }
 }

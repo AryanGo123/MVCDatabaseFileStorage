@@ -39,6 +39,28 @@ namespace MVCApp.Controllers
             return View();
         }
 
+        public ActionResult ReadData()
+        {
+            ViewBag.Message = "Download File";
+
+            var data = LoadUpload();
+            List<UploadModel> uploadModel = new List<UploadModel>();
+
+            foreach (var row in data) {
+                uploadModel.Add(new UploadModel
+                {
+                    CreatorName = data[0].CreatorName,
+                    TaskName = data[0].TaskName,
+                    DateCreated = data[0].DateCreated,
+                    FileName = data[0].FileName,
+                    MimeType = data[0].MimeType,
+                    Base64String = data[0].Base64String
+                });
+            }
+
+            return View(uploadModel);
+        }
+
         [HttpPost]
         public ActionResult SubmitForm(UploadModel model)
         {

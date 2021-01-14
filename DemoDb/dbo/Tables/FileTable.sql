@@ -5,6 +5,6 @@
     [TaskName] NVARCHAR(50) NULL, 
     [DateCreated] DATETIME NULL, 
     [FileName] NVARCHAR(50) NULL, 
-    [MimeType] NVARCHAR(50) NULL, 
+    [MimeType] NVARCHAR(150) NULL, 
     [Base64String] NVARCHAR(MAX) NULL
 )
