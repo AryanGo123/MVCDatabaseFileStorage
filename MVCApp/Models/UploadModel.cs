@@ -7,6 +7,7 @@ namespace MVCApp.Models
 {
     public class UploadModel
     {
+        public int Id { get; set; }
         public string CreatorName { get; set; }
         public string TaskName { get; set; }
         public DateTime DateCreated { get; set; }

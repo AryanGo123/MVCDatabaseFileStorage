@@ -49,12 +49,13 @@ namespace MVCApp.Controllers
             foreach (var row in data) {
                 uploadModel.Add(new UploadModel
                 {
-                    CreatorName = data[0].CreatorName,
-                    TaskName = data[0].TaskName,
-                    DateCreated = data[0].DateCreated,
-                    FileName = data[0].FileName,
-                    MimeType = data[0].MimeType,
-                    Base64String = data[0].Base64String
+                    Id = row.Id,
+                    CreatorName = row.CreatorName,
+                    TaskName = row.TaskName,
+                    DateCreated = row.DateCreated,
+                    FileName = row.FileName,
+                    MimeType = row.MimeType,
+                    Base64String = row.Base64String
                 });
             }
 
@@ -81,13 +82,27 @@ namespace MVCApp.Controllers
                         date
                     );
 
-                return RedirectToAction("Index");
+                return RedirectToAction("ReadData");
             }
 
             //model.File.FileName
             //model.File.ContentType
 
             return View();
+        }
+
+        [HttpPost]
+        public HttpResponseBase Download(string base64Str, string mimeType) {
+
+            byte[] data = Convert.FromBase64String(base64Str);
+
+            HttpResponseBase resp = Response;
+            resp.ContentType = mimeType;
+            resp.BinaryWrite(data);
+
+
+            return resp;
+
         }
 
     }

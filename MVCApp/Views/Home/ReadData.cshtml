@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "ReadData";
+    string base64 = Model.First().Base64String;
+    string mime = Model.First().MimeType;
 }
 
 <h2>ReadData</h2>
@@ -26,30 +28,47 @@
         <th>
             @Html.DisplayNameFor(model => model.MimeType)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Base64String)
-        </th>
-        <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreatorName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TaskName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DateCreated)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FileName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MimeType)
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatorName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TaskName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreated)
+            </td>
+            <td>
+                <a id='download @item.Id'>@Html.DisplayFor(modelItem => item.FileName)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MimeType)
+            </td>
+        </tr>
+    }
 
 </table>
+
+
+@section Scripts{
+    <script type="text/javascript">
+        console.log('@mime')
+        console.log('@base64')
+        $(document).ready(function () {
+            $('[id*="download"]').click(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Home/Download',
+                    data: { base64Str: '@base64', mimeType: '@mime'},
+                    success: function (result) {
+                        alert(result);
+                    }
+                });
+            });
+        })
+    </script>
+}
