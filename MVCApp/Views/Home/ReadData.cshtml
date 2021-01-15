@@ -2,8 +2,6 @@
 
 @{
     ViewBag.Title = "ReadData";
-    string base64 = Model.First().Base64String;
-    string mime = Model.First().MimeType;
 }
 
 <h2>ReadData</h2>
@@ -56,16 +54,20 @@
 
 @section Scripts{
     <script type="text/javascript">
-        console.log('@mime')
-        console.log('@base64')
         $(document).ready(function () {
             $('[id*="download"]').click(function () {
+
+                var htmlContent = $(this).html();
+
                 $.ajax({
-                    type: 'POST',
-                    url: '/Home/Download',
-                    data: { base64Str: '@base64', mimeType: '@mime'},
+                    type: 'GET',
+                    url: '/Home/Download/' + $(this).attr('id').substring(9),
                     success: function (result) {
-                        alert(result);
+                        var blob = new Blob([result]);
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = htmlContent;
+                        link.click();
                     }
                 });
             });

@@ -36,5 +36,15 @@ namespace DataLibrary.BusinessLogic
 
         }
 
+        public static UploadModel LoadUpload(int id)
+        {
+            string sql = @"select Id, CreatorName, TaskName, FileName, MimeType, Base64String, DateCreated
+                           from dbo.FileTable
+                           where Id=" + id.ToString() + ";";
+
+            return SqlDataAccess.LoadSingleData<UploadModel>(sql);
+
+        }
+
     }
 }

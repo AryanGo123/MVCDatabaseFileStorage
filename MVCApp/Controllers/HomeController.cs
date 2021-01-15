@@ -8,6 +8,9 @@ using System.Web.UI.WebControls;
 using MVCApp.Models;
 using DataLibrary;
 using static DataLibrary.BusinessLogic.UploadProcessor;
+using System.Net.Http;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace MVCApp.Controllers
 {
@@ -73,10 +76,12 @@ namespace MVCApp.Controllers
 
                 DateTime date = DateTime.Now;
 
+                string trim = Regex.Replace(model.File.FileName, " ", "-");
+
                 int recordsCreated = CreateUpload(
                         model.CreatorName, 
                         model.TaskName, 
-                        model.File.FileName, 
+                        trim, 
                         model.File.ContentType,
                         base64String, 
                         date
@@ -91,17 +96,23 @@ namespace MVCApp.Controllers
             return View();
         }
 
-        [HttpPost]
-        public HttpResponseBase Download(string base64Str, string mimeType) {
+        [HttpGet]
+        public HttpResponseMessage Download(int id) {
 
-            byte[] data = Convert.FromBase64String(base64Str);
+            var model = LoadUpload(id);
 
-            HttpResponseBase resp = Response;
-            resp.ContentType = mimeType;
-            resp.BinaryWrite(data);
+            byte[] data = Convert.FromBase64String(model.Base64String);
 
+            System.Web.HttpContext.Current.Response.Clear();
+            System.Web.HttpContext.Current.Response.Buffer = true;
+            System.Web.HttpContext.Current.Response.ContentType = model.MimeType;
+            System.Web.HttpContext.Current.Response.AppendHeader("Content-Length", data.Length.ToString());
+            System.Web.HttpContext.Current.Response.AppendHeader("Content-Disposition", string.Format("attachment; filename={0}", model.FileName));
+            System.Web.HttpContext.Current.Response.BinaryWrite(data);
+            System.Web.HttpContext.Current.Response.Flush();
+            System.Web.HttpContext.Current.Response.End();
 
-            return resp;
+            return new HttpResponseMessage(HttpStatusCode.OK);
 
         }
 
