@@ -42,7 +42,16 @@ namespace DataLibrary.BusinessLogic
                            from dbo.FileTable
                            where Id=" + id.ToString() + ";";
 
-            return SqlDataAccess.LoadSingleData<UploadModel>(sql);
+            return SqlDataAccess.LoadSingleData(sql);
+
+        }
+
+        public static bool Delete(int id)
+        {
+            string sql = @"delete from dbo.FileTable
+                           where Id=" + id.ToString() + ";";
+
+            return SqlDataAccess.DeleteData(sql);
 
         }
 

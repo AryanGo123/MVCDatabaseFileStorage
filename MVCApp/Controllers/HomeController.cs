@@ -11,6 +11,10 @@ using static DataLibrary.BusinessLogic.UploadProcessor;
 using System.Net.Http;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace MVCApp.Controllers
 {
@@ -40,6 +44,23 @@ namespace MVCApp.Controllers
             ViewBag.Message = "Upload File";
 
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult DeleteData(int id)
+        {
+            ViewBag.Message = "Delete File";
+
+            bool deleted = Delete(id);
+
+            if (deleted)
+            {
+                return RedirectToAction("ReadData");
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         public ActionResult ReadData()
@@ -76,7 +97,16 @@ namespace MVCApp.Controllers
 
                 DateTime date = DateTime.Now;
 
+                var dbData = LoadUpload();
+
                 string trim = Regex.Replace(model.File.FileName, " ", "-");
+
+                foreach (var row in dbData)
+                {
+                    if (row.FileName == trim) {
+                        trim += "-cpy";
+                    }
+                }
 
                 int recordsCreated = CreateUpload(
                         model.CreatorName, 
@@ -101,11 +131,16 @@ namespace MVCApp.Controllers
 
             var model = LoadUpload(id);
 
+            if (model.Id == -1) {
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            }
+
             byte[] data = Convert.FromBase64String(model.Base64String);
 
             System.Web.HttpContext.Current.Response.Clear();
             System.Web.HttpContext.Current.Response.Buffer = true;
             System.Web.HttpContext.Current.Response.ContentType = model.MimeType;
+            System.Web.HttpContext.Current.Response.Charset = "UTF-16";
             System.Web.HttpContext.Current.Response.AppendHeader("Content-Length", data.Length.ToString());
             System.Web.HttpContext.Current.Response.AppendHeader("Content-Disposition", string.Format("attachment; filename={0}", model.FileName));
             System.Web.HttpContext.Current.Response.BinaryWrite(data);

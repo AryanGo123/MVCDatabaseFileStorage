@@ -26,6 +26,9 @@
         <th>
             @Html.DisplayNameFor(model => model.MimeType)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
     </tr>
 
     @foreach (var item in Model)
@@ -41,10 +44,14 @@
                 @Html.DisplayFor(modelItem => item.DateCreated)
             </td>
             <td>
-                <a id='download @item.Id'>@Html.DisplayFor(modelItem => item.FileName)</a>
+                <a id='download @item.Id' data-mime="@item.MimeType">@Html.DisplayFor(modelItem => item.FileName)</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.MimeType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+                @Html.ActionLink("Delete Item", "DeleteData", new { id = item.Id })
             </td>
         </tr>
     }
@@ -58,19 +65,28 @@
             $('[id*="download"]').click(function () {
 
                 var htmlContent = $(this).html();
+                var mime = $(this).attr("data-mime");
 
                 $.ajax({
                     type: 'GET',
                     url: '/Home/Download/' + $(this).attr('id').substring(9),
                     success: function (result) {
-                        var blob = new Blob([result]);
+                        /*var bytes = new Uint16Array(result.length)
+
+                        for (var i = 0; i < bytes.length; i++)
+                            bytes[i] = result.charCodeAt(i);
+
+                        var arBuf = bytes.buffer;
+
+                        var blob = new Blob([arBuf], {type: mime});
                         var link = document.createElement('a');
                         link.href = window.URL.createObjectURL(blob);
                         link.download = htmlContent;
-                        link.click();
+                        link.click();*/
                     }
                 });
             });
+
         })
     </script>
 }

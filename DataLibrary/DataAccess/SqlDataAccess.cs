@@ -11,7 +11,7 @@ namespace DataLibrary.DataAccess
 {
     class SqlDataAccess
     {
-        public static string GetConnectionString(string connectionName = "DemoDb") {
+        public static string GetConnectionString(string connectionName = "LoadTestDB") {
             return ConfigurationManager.ConnectionStrings[connectionName].ConnectionString;
         }
 
@@ -21,11 +21,20 @@ namespace DataLibrary.DataAccess
             }
         }
 
-        public static T LoadSingleData<T>(string sql)
+        public static Models.UploadModel LoadSingleData(string sql)
         {
             using (IDbConnection cnn = new SqlConnection(GetConnectionString()))
             {
-                return cnn.Query<T>(sql).First();
+                var Query = cnn.Query<Models.UploadModel>(sql);
+
+                if (Query == null || !Query.Any()) {
+                    var obj = new Models.UploadModel();
+                    obj.Id = -1;
+
+                    return obj;
+                }
+
+                return Query.First();
             }
         }
 
@@ -33,6 +42,14 @@ namespace DataLibrary.DataAccess
             using (IDbConnection cnn = new SqlConnection(GetConnectionString()))
             {
                 return cnn.Execute(sql, data);
+            }
+        }
+
+        public static bool DeleteData(string sql)
+        {
+            using (IDbConnection cnn = new SqlConnection(GetConnectionString()))
+            {
+                return cnn.Execute(sql) > 0;
             }
         }
 
